@@ -10,7 +10,7 @@ import android.widget.Toast;
 import com.trello.rxlifecycle2.components.support.RxAppCompatActivity;
 import com.xiemiao.rxnet.exception.ExceptionHandle;
 import com.xiemiao.rxnet.observer.CommonObserver;
-import com.xiemiao.rxnet.utils.RxUtils;
+import com.xiemiao.rxnet.observer.ObservablePacking;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -67,11 +67,7 @@ public class MainActivity extends RxAppCompatActivity {
         params.put("key", "1889b37351288");//申请的key,验证接口有效用
         params.put("phone", phone);
 
-        mRetrofit.create(CommonService.class)
-                .phoneQuery(params)
-                .compose(this.<QueryResult>bindToLifecycle())//绑定生命周期
-                .compose(RxUtils.<QueryResult>httpTransformer())
-                .compose(RxUtils.<QueryResult>schedulersTransformer())
+        ObservablePacking.getObservable(mRetrofit.create(CommonService.class).phoneQuery(params), this)
                 .subscribe(new CommonObserver<QueryResult>() {
                     @Override
                     protected void onStart(Disposable d) {
